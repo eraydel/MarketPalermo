@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13122.16" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13104.12"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -11,15 +13,56 @@
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" xcode11CocoaTouchSystemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="LXt-Wl-qSh">
+                                <rect key="frame" x="161" y="327" width="92" height="113"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="92" id="5p2-Pq-lCb"/>
+                                    <constraint firstAttribute="height" constant="113" id="hwj-9r-i7I"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Market" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y4q-On-y4K">
+                                <rect key="frame" x="142" y="448" width="130" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="130" id="3Rl-bF-ugT"/>
+                                    <constraint firstAttribute="height" constant="48" id="l9j-Dc-Cln"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="40"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="By Erick Ayala" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nDK-M3-kTy">
+                                <rect key="frame" x="167.5" y="496" width="79" height="14.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="LXt-Wl-qSh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="283" id="0r9-Zq-Nl2"/>
+                            <constraint firstItem="y4q-On-y4K" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Sav-nT-zAc"/>
+                            <constraint firstItem="y4q-On-y4K" firstAttribute="top" secondItem="LXt-Wl-qSh" secondAttribute="bottom" constant="8" id="dsX-bA-Vfv"/>
+                            <constraint firstItem="y4q-On-y4K" firstAttribute="top" secondItem="LXt-Wl-qSh" secondAttribute="bottom" constant="8" id="etY-QW-5I4"/>
+                            <constraint firstItem="nDK-M3-kTy" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="jOt-la-euR"/>
+                            <constraint firstItem="y4q-On-y4K" firstAttribute="top" secondItem="LXt-Wl-qSh" secondAttribute="bottom" constant="8" id="mEp-iO-tDw"/>
+                            <constraint firstItem="nDK-M3-kTy" firstAttribute="top" secondItem="y4q-On-y4K" secondAttribute="bottom" id="oJt-tV-2Ey"/>
+                            <constraint firstItem="LXt-Wl-qSh" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="qfK-Ev-fCs"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52.173913043478265" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="logo" width="233.5" height="281"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
