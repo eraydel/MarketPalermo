@@ -12,12 +12,16 @@ class FoodTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+    }
+    
+    @objc func refresh(sender:AnyObject)
+    {
+        // Updating your data here...
+        print("actualizando los datos...")
+        DataManager.instance.getFoodItems()
+        self.tableView.reloadData()
+        self.refreshControl?.endRefreshing()
     }
     
 
