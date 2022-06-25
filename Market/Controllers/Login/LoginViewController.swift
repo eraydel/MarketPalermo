@@ -6,10 +6,18 @@
 //
 
 import UIKit
+import FirebaseCore
 import FirebaseAuth
+import GoogleSignIn
+import AuthenticationServices
+
+import CryptoKit
 
 class LoginViewController: UIViewController {
     
+    // Unhashed nonce.
+    fileprivate var currentNonce: String?
+
     
     @IBOutlet weak var username: UITextField!
     @IBOutlet weak var password: UITextField!
@@ -18,6 +26,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setGradientBackground()
         setLoader()
     }
 
@@ -27,6 +36,60 @@ class LoginViewController: UIViewController {
         } else {
             setMessage("Error", "¡Capture correctamente sus datos!")
         }
+    }
+    
+    @IBAction func btnGoogle(_ sender: Any) {
+        loginGoogle()
+    }
+    
+    
+    // Setup Google
+    func loginGoogle(){
+        loader.startAnimating()
+        guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+        
+        // Create Google Sign In configuration object.
+        let config = GIDConfiguration(clientID: clientID)
+        
+        // Start the sign in flow!
+        GIDSignIn.sharedInstance.signIn(with: config, presenting: self) { user, error in
+
+          if let error = error {
+              self.loader.stopAnimating()
+              print(error.localizedDescription)
+            return
+          }
+
+          guard
+            let authentication = user?.authentication,
+            let idToken = authentication.idToken
+          else {
+            return
+          }
+            
+            let credentials = GoogleAuthProvider.credential(withIDToken: idToken,accessToken: authentication.accessToken)
+            
+            Auth.auth().signIn(with: credentials) { authResult , error in
+                
+                if let error = error {
+                    self.loader.stopAnimating()
+                    print("hubo un error \(error.localizedDescription)")
+                }
+                self.loader.stopAnimating()
+                guard let userPictureProfile = user?.profile?.imageURL(withDimension: 60) , let email = user?.profile?.email
+                    else { return }
+                
+                let defaults = UserDefaults.standard
+                defaults.set(userPictureProfile , forKey: "userPictureProfile")
+                
+                print(email)
+                
+                self.performSegue(withIdentifier: "goHome", sender: nil)
+            }
+            
+        }
+
+        
     }
     
     // login method
@@ -47,6 +110,91 @@ class LoginViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func btnApple(_ sender: Any) {
+        loginApple()
+    }
+    
+    func loginApple(){
+        print("login with apple..")
+        let request = createAppleIDRequest()
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
+    
+    func createAppleIDRequest() -> ASAuthorizationAppleIDRequest {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName , .email]
+        
+        let nonce = randomNonceString()
+        request.nonce = sha256(nonce)
+        currentNonce = nonce
+        return request
+    }
+    
+    // Adapted from https://auth0.com/docs/api-auth/tutorials/nonce#generate-a-cryptographically-random-nonce
+    private func randomNonceString(length: Int = 32) -> String {
+      precondition(length > 0)
+      let charset: [Character] =
+        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+      var result = ""
+      var remainingLength = length
+
+      while remainingLength > 0 {
+        let randoms: [UInt8] = (0 ..< 16).map { _ in
+          var random: UInt8 = 0
+          let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+          if errorCode != errSecSuccess {
+            fatalError(
+              "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
+            )
+          }
+          return random
+        }
+
+        randoms.forEach { random in
+          if remainingLength == 0 {
+            return
+          }
+
+          if random < charset.count {
+            result.append(charset[Int(random)])
+            remainingLength -= 1
+          }
+        }
+      }
+
+      return result
+    }
+    
+    
+    func startSignInWithAppleFlow() {
+      let nonce = randomNonceString()
+      currentNonce = nonce
+      let appleIDProvider = ASAuthorizationAppleIDProvider()
+      let request = appleIDProvider.createRequest()
+      request.requestedScopes = [.fullName, .email]
+      request.nonce = sha256(nonce)
+
+      let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+      authorizationController.delegate = self
+      authorizationController.presentationContextProvider = self
+      authorizationController.performRequests()
+    }
+    
+    private func sha256(_ input: String) -> String {
+      let inputData = Data(input.utf8)
+      let hashedData = SHA256.hash(data: inputData)
+      let hashString = hashedData.compactMap {
+        String(format: "%02x", $0)
+      }.joined()
+
+      return hashString
+    }
+        
     
     @IBAction func btnSignUp(_ sender: Any) {
         let alert = UIAlertController(title: "Crear cuenta" , message: "Por favor introduce tus datos.", preferredStyle: UIAlertController.Style.alert)
@@ -154,5 +302,76 @@ class LoginViewController: UIViewController {
         self.view.addSubview(loader)
     }
     
+    //MARK: - Gradient
+    private func setGradientBackground() {
+        let colorTop =  UIColor(red: 140/255, green: 143/255, blue: 160/255, alpha: 0.7).cgColor
+        let colorBottom = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.5).cgColor
+
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [colorTop, colorBottom]
+        gradientLayer.locations = [0.0, 0.15]
+        gradientLayer.frame = self.view.bounds
+
+        let backgroundView = UIView(frame: self.view.bounds)
+        backgroundView.layer.insertSublayer(gradientLayer, at: .zero)
+        view.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
 }
+
+extension LoginViewController: ASAuthorizationControllerDelegate {
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        loader.startAnimating()
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            
+            // retrieve the secure nonce generated
+            guard let nonce = self.currentNonce else {
+                print("Invalid state: A login callback was received, but not login request was sent")
+                return
+            }
+            
+            // Retrieve Apple Identity token
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                print("Failed to decoded identity token")
+                return
+            }
+            
+            //convert apple identity token to string
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                print("Failed to fetch identity token")
+                return
+            }
+            
+            //Initialize a firebase credential
+            let firebaseCredential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+            
+            
+            Auth.auth().signIn(with: firebaseCredential) { authResult, error in
+                
+                if let error = error {
+                    print(error.localizedDescription)
+                    return
+                }
+                
+            }
+            self.performSegue(withIdentifier: "goHome", sender: nil)
+            
+        }
+    }
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        print(error.localizedDescription)
+    }
+
+}
+
+extension LoginViewController: ASAuthorizationControllerPresentationContextProviding {
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+    
+}
+
 

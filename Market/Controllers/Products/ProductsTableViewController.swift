@@ -1,38 +1,41 @@
 //
-//  FoodTableViewController.swift
+//  ProductsTableViewController.swift
 //  Market
 //
-//  Created by Erick Ayala Delgadillo on 23/05/22.
+//  Created by Erick Ayala Delgadillo on 03/06/22.
 //
 
 import UIKit
 
-
-class FoodTableViewController: UITableViewController {
+class ProductsTableViewController: UITableViewController {
     
-    var searchedFood = [Food]()
+    var searchedProducts = [Products]()
     
     let searchController = UISearchController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
-        setGradientBackground()
+        
+        //init search controller
         initSearchController()
+        setGradientBackground()
         addLeftBarIcon(named: "logo-horizontal")
+        
     }
     
     func initSearchController(){
         searchController.loadViewIfNeeded()
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.enablesReturnKeyAutomatically = true
+        searchController.searchBar.enablesReturnKeyAutomatically = false
         searchController.searchBar.returnKeyType = UIReturnKeyType.done
-        searchController.searchBar.searchTextField.placeholder = "¿Qué te gustaría comer?"
+        searchController.searchBar.searchTextField.placeholder = "¿Qué producto estás buscando?"
         definesPresentationContext = true
+        
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        searchController.searchBar.scopeButtonTitles = ["Todo","Comida","Bebidas","Postres"]
+        searchController.searchBar.scopeButtonTitles = ["Todo","Ropa","Calzado","Diversos"]
         searchController.searchBar.delegate = self
         
     }
@@ -41,42 +44,39 @@ class FoodTableViewController: UITableViewController {
     {
         // Updating your data here...
         print("actualizando los datos...")
-        DataManager.instance.getFoodItems()
+        DataManager.instance.getProductstems()
         self.tableView.reloadData()
         self.refreshControl?.endRefreshing()
     }
-    
+
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         if searchController.isActive {
-            return searchedFood.count
+            return searchedProducts.count
         }
         else {
-            return DataManager.instance.food.count
+            return DataManager.instance.products.count
         }
-        
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
-
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "foodCell", for: indexPath)
-        cell.backgroundColor = .clear
+        let cell = tableView.dequeueReusableCell(withIdentifier: "productsCell", for: indexPath)
+        
         if searchController.isActive {
-            let item = searchedFood[indexPath.row]
-            let imagePlaceHolder = UIImage.init(named: "foodPlaceholder")!
+            let item = searchedProducts[indexPath.row]
+            let imagePlaceHolder = UIImage.init(named: "productPlaceholder")!
             cell.textLabel?.text = item.title
             cell.detailTextLabel?.text = item.owner
             cell.imageView?.contentMode = UIView.ContentMode.scaleToFill
@@ -87,8 +87,8 @@ class FoodTableViewController: UITableViewController {
             cell.imageView?.imageFromURL(urlString:  item.image, PlaceHolderImage: imagePlaceHolder.resizeImageWithHeight(newW: 60, newH: 60)!)
         }
         else {
-            let item = DataManager.instance.food[indexPath.row]
-            let imagePlaceHolder = UIImage.init(named: "foodPlaceholder")!
+            let item = DataManager.instance.products[indexPath.row]
+            let imagePlaceHolder = UIImage.init(named: "productPlaceholder")!
             cell.textLabel?.text = item.title
             cell.detailTextLabel?.text = item.owner
             cell.imageView?.contentMode = UIView.ContentMode.scaleToFill
@@ -104,18 +104,17 @@ class FoodTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searchController.isActive {
-            let selectedFood = searchedFood[indexPath.row]
-            print(selectedFood)
+            let selectedProduct = searchedProducts[indexPath.row]
+            print(selectedProduct)
         }
         else {
-            let selectedFood = DataManager.instance.food[indexPath.row]
-            print(selectedFood)
+            let selectedProduct = DataManager.instance.products[indexPath.row]
+            print(selectedProduct)
         }
         
-        self.performSegue(withIdentifier: "foodItemDetail", sender: self)
-        
-    }
+        self.performSegue(withIdentifier: "productItemDetail", sender: self)
 
+    }
     
     // MARK: - Navigation
 
@@ -123,17 +122,17 @@ class FoodTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let identifier = segue.identifier else { return }
         switch identifier {
-            case "foodItemDetail":
-                let detailsVC = segue.destination as! FoodDetailViewController
+            case "productItemDetail":
+                let detailsVC = segue.destination as! ProductDetailViewController
                 if let indexPath = tableView.indexPathForSelectedRow {
                     if searchController.isActive {
-                        let item = searchedFood[indexPath.row]
-                        detailsVC.food = item
+                        let item = searchedProducts[indexPath.row]
+                        detailsVC.product = item
                         tableView.deselectRow(at: indexPath, animated: true)
                     }
                     else {
-                        let item = DataManager.instance.food[indexPath.row]
-                        detailsVC.food = item
+                        let item = DataManager.instance.products[indexPath.row]
+                        detailsVC.product = item
                         tableView.deselectRow(at: indexPath, animated: true)
                     }
                 }
@@ -143,87 +142,14 @@ class FoodTableViewController: UITableViewController {
         }
     }
     
-    //el cuerpo de la función debería estar dentro de una clase para invocar en cada apartado al menu contextual del usuario
     @IBAction func showMenu(_ sender: Any) {
         print("user click on menu ")
         let vc = CustomModalViewController()
         vc.defaultHeight = 250
         vc.modalPresentationStyle = .overFullScreen
         vc.containerView.backgroundColor = .black
-        vc.contentStackView = UserMenu.instance.options // singleton pattern
+        vc.contentStackView = UserMenu.instance.options
         self.present(vc, animated: false)
-    }
-    
-    @IBAction func showContact(_ sender: Any) {
-        
-    }
-    
-}
-
-extension UIImage{
-    func resizeImageWithHeight(newW: CGFloat, newH: CGFloat) -> UIImage? {
-        UIGraphicsBeginImageContext(CGSize(width: newW, height: newH))
-        self.draw(in: CGRect(x: 0, y: 0, width: newW, height: newH))
-        
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return newImage
-    }
-}
-
-extension UIImageView {
-
- public func imageFromURL(urlString: String, PlaceHolderImage:UIImage) {
-
-        if self.image == nil{
-              self.image = PlaceHolderImage
-        }
-
-        URLSession.shared.dataTask(with: NSURL(string: urlString)! as URL, completionHandler: { (data, response, error) -> Void in
-
-            if error != nil {
-                print(error ?? "No Error")
-                return
-            }
-            DispatchQueue.main.async(execute: { () -> Void in
-                let image = UIImage(data: data!)
-                self.image = image?.resizeImageWithHeight(newW: 60, newH: 60)
-            })
-
-        }).resume()
-
-    }}
-
-
-// MARK: - Extension for searchBar
-extension FoodTableViewController: UISearchBarDelegate, UISearchResultsUpdating  {
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        let scopeButton = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
-        let searchText = searchBar.text!
-        filterForSearchTextAndScopeButton(searchText: searchText , scopeButton: scopeButton)
-    }
-    
-    func filterForSearchTextAndScopeButton(searchText: String , scopeButton: String = "Todo"){
-        
-        self.searchedFood = DataManager.instance.food.filter
-        {
-            item in
-            let scopeMatch = (scopeButton == "Todo" || item.category == scopeButton )
-            if searchController.searchBar.text != ""
-            {
-                let searchTextMatch = item.title.lowercased().contains(searchText.lowercased())
-                return scopeMatch && searchTextMatch
-            }
-            else
-            {
-                return scopeMatch
-            }
-        }
-        
-        tableView.reloadData()
     }
     
     //MARK: -
@@ -253,5 +179,39 @@ extension FoodTableViewController: UISearchBarDelegate, UISearchResultsUpdating 
          heightConstraint.isActive = true
          widthConstraint.isActive = true
          navigationItem.leftBarButtonItem =  imageItem
+    }
+    
+
+}
+
+
+// MARK: - Extension for searchBar
+extension ProductsTableViewController: UISearchBarDelegate , UISearchResultsUpdating  {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        let scopeButton = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
+        let searchText = searchBar.text!
+        filterForSearchTextAndScopeButton(searchText: searchText , scopeButton: scopeButton)
+    }
+    
+    func filterForSearchTextAndScopeButton(searchText: String , scopeButton: String = "Todo"){
+        
+        self.searchedProducts = DataManager.instance.products.filter
+        {
+            item in
+            let scopeMatch = (scopeButton == "Todo" || item.category == scopeButton )
+            if searchController.searchBar.text != ""
+            {
+                let searchTextMatch = item.title.lowercased().contains(searchText.lowercased())
+                return scopeMatch && searchTextMatch
+            }
+            else
+            {
+                return scopeMatch
+            }
+        }
+        
+        tableView.reloadData()
     }
 }

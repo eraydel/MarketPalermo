@@ -13,17 +13,22 @@ class CustomModalViewController: UIViewController {
     lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Get Started"
-        label.font = .boldSystemFont(ofSize: 20)
+        label.font = .boldSystemFont(ofSize: 16)
         return label
     }()
     
     lazy var notesLabel: UILabel = {
         let label = UILabel()
         //label.text = "esto es un texto de prueba"
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 14)
         label.textColor = .darkGray
         label.numberOfLines = 0
         return label
+    }()
+    
+    lazy var imageDetail: UIImageView = {
+        let image = UIImageView()
+        return image
     }()
     
     lazy var cartButton: UIButton = {
@@ -35,16 +40,16 @@ class CustomModalViewController: UIViewController {
     
     lazy var contentStackView: UIStackView = {
         let spacer = UIView()
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, notesLabel, cartButton, spacer])
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, notesLabel, imageDetail , cartButton, spacer])
         stackView.axis = .vertical
-        stackView.spacing = 12.0
+        stackView.spacing = 16.0
         return stackView
     }()
     
     lazy var containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
-        view.layer.cornerRadius = 16
+        view.layer.cornerRadius = 8
         view.clipsToBounds = true
         return view
     }()
@@ -57,7 +62,7 @@ class CustomModalViewController: UIViewController {
         return view
     }()
     
-    let defaultHeight: CGFloat = 300
+    var defaultHeight: CGFloat = 460
     let dismissibleHeight: CGFloat = 200
     let maximumContainerHeight: CGFloat = UIScreen.main.bounds.height - 64
     // keep updated with new height
@@ -234,6 +239,13 @@ class CustomModalViewController: UIViewController {
             // call this to trigger refresh constraint
             self.view.layoutIfNeeded()
         }
+    }
+    
+    @objc func navigateToWhatsApp() {
+        //setMessage(food.owner, "Por favor, le encargo mi pedido, no me vaya adejar sin comer xD...")
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let newViewController = storyBoard.instantiateViewController(withIdentifier: "m") as! ConfirmViewController
+        self.present(newViewController, animated: true, completion: nil)
     }
     
 }

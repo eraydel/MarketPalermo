@@ -1,13 +1,13 @@
 //
-//  Food.swift
+//  Products.swift
 //  Market
 //
-//  Created by Erick Ayala Delgadillo on 23/05/22.
+//  Created by Erick Ayala Delgadillo on 03/06/22.
 //
 
 import Foundation
 
-struct Food: Codable {
+struct Products: Codable {
     
     let id: Int
     let title: String
@@ -19,15 +19,18 @@ struct Food: Codable {
     let address: String
     let telephone: String
     let location: [Location]
-    let menu: [Menu]     
+    let catalog: [Catalog]
 }
 
-struct Menu: Codable {
-    
+struct Catalog: Codable {
     let id: Int
     let title: String
     let description: String
     let price: Int
     let image: String
-    
+}
+
+struct Location: Codable {
+    let lat: Double
+    let lng: Double
 }

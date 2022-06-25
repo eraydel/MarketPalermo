@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import GoogleSignIn
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -42,6 +43,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 self.cambiarVistaA("")
             }
         }
+        
+        //window?.safeAreaLayoutGuide.owningView?.backgroundColor = .green
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

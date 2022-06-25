@@ -8,48 +8,58 @@
 import UIKit
 import FirebaseAuth
 import SwiftUI
+import GoogleSignIn
+import Lottie
 
 class HomeViewController: UIViewController {
-
-    @IBOutlet weak var email: UILabel!
+    
+    var animation: AnimationView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        email.text = Auth.auth().currentUser?.email
-        // Do any additional setup after loading the view.
+        UserMenu.instance.getOptions()
+        setGradientBackground()
+        showAnimation()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        showAnimation()
+    }
+    
+    func showAnimation(){
+        self.animation?.removeFromSuperview()
+        self.animation = .init(name: "welcome-market")
+        self.animation?.frame.size = CGSize(width: 330, height: 300)
+        self.animation?.center = self.view.center
+        self.animation?.loopMode = .loop
+        self.animation?.play()
+        self.view.addSubview(self.animation!)
     }
     
 
     @IBAction func btnLogout(_ sender: Any) {
-        //Auth.auth().signOut()
         print("cerrando sesión...")
-        let alert = UIAlertController(title: "¿Seguro bro?", message: "Realmente deseas cerrar tu sesión?", preferredStyle: UIAlertController.Style.alert)
-            alert.addAction(UIAlertAction(title: "No", style: UIAlertAction.Style.cancel, handler: nil))
-        let btnNo = UIAlertAction(title: "Sí", style: .destructive) { action in
-            
-            do {
-                try Auth.auth().signOut()
-                //Obtenemos una referencia al SceneDelegate:
-                //Podría haber mas de una escena en IpAd OS o en MacOS
-                let escena = UIApplication.shared.connectedScenes.first
-                let sd = escena?.delegate as! SceneDelegate
-                sd.cambiarVistaA("")
-            }
-            catch {
-                
-            }
-        }
-        alert.addAction(btnNo)
-        self.present(alert, animated: true, completion: nil)
+        let vc = CustomModalViewController()
+        vc.defaultHeight = 250
+        vc.modalPresentationStyle = .overFullScreen
+        vc.containerView.backgroundColor = .black
+        vc.contentStackView = UserMenu.instance.options // singleton pattern
+        self.present(vc, animated: false)
     }
-    /*
-    // MARK: - Navigation
+    
+    //MARK: - Gradient
+    private func setGradientBackground() {
+        let colorTop =  UIColor(red: 140/255, green: 143/255, blue: 160/255, alpha: 0.7).cgColor
+        let colorBottom = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 0.5).cgColor
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [colorTop, colorBottom]
+        gradientLayer.locations = [0.005, 0.15]
+        gradientLayer.frame = self.view.bounds
+
+        let backgroundView = UIView(frame: self.view.bounds)
+        backgroundView.layer.insertSublayer(gradientLayer, at: .zero)
+        view.layer.insertSublayer(gradientLayer, at: 0)
     }
-    */
-
 }
