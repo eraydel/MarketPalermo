@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseCore
 import GoogleSignIn
+import FirebaseMessaging
 
 
 @main
@@ -18,6 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         //inicializar firebase
         FirebaseApp.configure()
+        
+        //push notifications
+        UNUserNotificationCenter.current().delegate = self
+        
+        let authOptions: UNAuthorizationOptions = [.alert , .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_,_ in})
+        
+        application.registerForRemoteNotifications()
         
         DataManager.instance.getFoodItems()
         DataManager.instance.getProductstems()
@@ -50,5 +59,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+}
+
+//MARK: -
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
 }
 
