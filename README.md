@@ -1,14 +1,14 @@
 # Market Palermo
 #### _Todo lo que buscas en un solo lugar._
 
-[![Build Status](https://i.ibb.co/NrMGC21/happy-logo.png)](https://market-palermo.yolasite.com/)
+[![Build Status](https://i.ibb.co/j5tjtS0/happy-logo-small.png)](https://market-palermo.yolasite.com/)
 
 ## Sitio web
 https://market-palermo.yolasite.com/
 
 ## App Store
 https://apps.apple.com/app/market-palermo/id1631179987
-[![Build Status](https://i.ibb.co/3hDzZYx/download.png)](https://apps.apple.com/app/market-palermo/id1631179987)
+
 
 ## Características
 
