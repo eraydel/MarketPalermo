@@ -26,18 +26,20 @@ Se optó únicamente compatibilidad iPhone por fines de aprendizaje
 Portrait
 Se optó únicamente orientación portrait por facilidad de uso
 
-## Versión de pruebas
-Está disponible la versión beta para pruebas, que incluye:
-- Registro de Usuario
-- Autenticación con Google
-- Autenticación con Apple
-- Uso de Firebase 
 
 ## Instalación Versión Productiva
 ```sh
 https://apps.apple.com/app/market-palermo/id1631179987
 ```
 
+
+## Versión de pruebas
+Está disponible la versión beta para pruebas, que incluye:
+- Registro de Usuario
+- Autenticación con Google
+- Autenticación con Apple
+- Uso de Firebase 
+- 
 #### Instalación Versión de Pruebas
 
 ```sh
