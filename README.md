@@ -9,6 +9,8 @@ https://market-palermo.yolasite.com/
 ## App Store
 https://apps.apple.com/app/market-palermo/id1631179987
 
+## Video Promocional
+https://www.youtube.com/watch?v=nQPfCZDAZFE
 
 ## Características
 
