@@ -24,7 +24,7 @@ Se optó únicamente compatibilidad iPhone por fines de aprendizaje
 
 ## Orientación
 Portrait
-Se optó únicamente prientación portrait por facilidad de uso
+Se optó únicamente orientación portrait por facilidad de uso
 
 ## Versión de pruebas
 Está disponible la versión beta para pruebas, que incluye:
